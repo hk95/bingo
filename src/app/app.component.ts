@@ -71,26 +71,4 @@ export class AppComponent {
     }
     this.loading = false;
   }
-
-  autoInput(inputNum: number) {
-    switch (inputNum) {
-      case 1:
-        // this.bingoSize = 3;
-        this.inputValue =
-          '3\napple orange cube\nbatch web cloud\nsql http https\n7\nweb\nhttps\nwindows\nbatch\nkeyboard\napple\ncpu';
-        break;
-
-      case 2:
-        // this.bingoSize = 4;
-        this.inputValue =
-          '3\ncpp kotlin typescript\ncsharp ruby php\ngo rust dart\n5\njava\ndelphi\nfortran\nhaskell\npython';
-        break;
-
-      case 3:
-        // this.bingoSize = 4;
-        this.inputValue =
-          '4\nbeer wine gin vodka\nbeef chicken pork seafood\nant bee ladybug beetle\nbear snake dog camel\n7\nbe\nbear\nbee\nbeef\nbeen\nbeer\nbeetle';
-        break;
-    }
-  }
 }
