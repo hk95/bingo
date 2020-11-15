@@ -1,33 +1,19 @@
 <div class="input">
-  <textarea
-    class="input__textarea"
-    [cols]="bingoNum"
-    [rows]="bingoNum"
-    [(ngModel)]="bingoText"
-  ></textarea>
-  {{ bingoNum }}
+  <textarea class="input__textarea" [(ngModel)]="inputValue"></textarea>
 </div>
+
 <button class="check-button" (click)="autoInput(1)">自動入力例１</button>
 <button class="check-button" (click)="autoInput(2)">自動入力例２</button>
 <button class="check-button" (click)="autoInput(3)">自動入力例３</button>
-<br /><br />
-<button class="check-button" (click)="checkBing()">ビンゴの確認する</button>
-adf
 
-<h2 class="output">出力結果</h2>
-<p class="output__res" *ngIf="loading && isInputCompleted">確認中</p>
-<p class="output__res" *ngIf="!loading && isInputCompleted">
-  {{ tate > 0 || yoko > 0 || naname1 > 0 || naname2 > 0 ? "yes" : "no" }}
-</p>
-<p class="output__res" *ngIf="!loading && isInputCompleted">
-  {{ yoko > 0 ? "yyes" : "yno" }}
-</p>
-<p class="output__res" *ngIf="!loading && isInputCompleted">
-  {{ tate > 0 ? "tayes" : "tno" }}
-</p>
-<p class="output__res" *ngIf="!loading && isInputCompleted">
-  {{ naname1 > 0 ? "斜め１yes" : "斜め１no" }}
-</p>
-<p class="output__res" *ngIf="!loading && isInputCompleted">
-  {{ naname2 > 0 ? "斜め２ayes" : "斜め２no" }}
-</p>
+<button class="check-button" (click)="checkBingo()">
+  ビンゴの結果を確認する
+</button>
+
+<div class="output">
+  <h2>出力結果</h2>
+
+  <p *ngIf="!loading && isInputCompleted">
+    {{ result ? 'yes' : 'no' }}
+  </p>
+</div>
