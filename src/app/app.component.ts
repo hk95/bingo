@@ -6,98 +6,89 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  private bingoSize: number;
+  private bingoMatrix: string[][];
+  private checkList: string[];
+
   loading: boolean;
   isInputCompleted: boolean;
-  tate = 0;
-  yoko = 0;
-  naname1 = 0;
-  naname2 = 1;
+  result: boolean;
+  inputValue: string;
 
-  bingoNum: number;
-  bingoText: string;
-  bingoTexts: string[][];
-  checkTexts: string[];
-  checkNum: number;
-
-  reset(): void {
-    this.tate = 0;
-    this.yoko = 0;
-    this.naname1 = 0;
-    this.naname2 = 0;
-
-    const fd: string[] = this.bingoText.split(/\n/);
-    console.log(fd);
-    this.bingoNum = Number(fd[0]);
-    this.bingoTexts = [];
-    this.checkTexts = [];
-    this.checkNum = Number(fd[this.bingoNum + 1]);
-    for (let i = 0; i < this.bingoNum; i++) {
-      this.bingoTexts[i] = fd[i + 1].split(/\s/);
-    }
-    for (let i = 0; i < this.checkNum; i++) {
-      this.checkTexts[i] = fd[this.bingoNum + i + 2];
-      console.log(this.checkTexts);
-    }
-  }
-
-  checkBing() {
-    this.reset();
+  private initData(): void {
+    this.result = false;
     this.loading = true;
     this.isInputCompleted = true;
+    const allTexts = this.inputValue.split(/\n/);
+    this.bingoSize = Number(allTexts[0]);
+    this.bingoMatrix = allTexts
+      .slice(1, this.bingoSize + 1)
+      .map((texts) => texts.split(/\s/));
+    this.checkList = allTexts.slice(this.bingoSize + 2, allTexts.length);
+  }
 
-    let naname1 = 0;
-    let naname2 = 0;
-    const tate = new Array(this.bingoNum).fill(0);
+  checkBingo(): void {
+    this.initData();
+    const verticalLinesCounters = new Array(this.bingoSize).fill(0);
+    let diagonalLineCounter1 = 0;
+    let diagonalLineCounter2 = 0;
+    let verticalIndex = 0;
 
-    new Promise((resolve) => {
-      this.bingoTexts.forEach((v: string[], verticalIndex: number) => {
-        let yoko = 0;
-        new Promise((resolve1) => {
-          v.forEach((_: string, horizonIndex: number) => {
-            this.checkTexts.forEach((word: string) => {
-              if (this.bingoTexts[verticalIndex][horizonIndex] === word) {
-                yoko++;
-                tate[horizonIndex]++;
-                verticalIndex + horizonIndex === this.bingoNum
-                  ? naname1++
-                  : null;
-                verticalIndex === horizonIndex ? naname2++ : null;
-              }
-            });
-          });
-          resolve1(true);
-        }).then(() => {
-          yoko === this.bingoNum ? this.yoko++ : null;
-        });
-        resolve(true);
-      });
-    }).then(() => {
-      tate.forEach((tv) => {
-        tv === this.bingoNum ? this.tate++ : null;
-      });
-      naname1 === this.bingoNum ? this.naname1++ : null;
-      naname2 === this.bingoNum ? this.naname2++ : null;
-      this.loading = false;
-    });
+    // ビンゴ縦方向のループ
+    while (verticalIndex < this.bingoSize && !this.result) {
+      let horizontalLineCounter = 0;
+
+      // ビンゴ横方向のループ
+      this.bingoMatrix[verticalIndex].forEach(
+        (_: string, horizonIndex: number) => {
+          // チェックする文字列リストに指定した文字列があれば全４タイプ（縦、横、斜め右上がり、右下がり）に+1加算する
+          if (
+            this.checkList.includes(
+              this.bingoMatrix[verticalIndex][horizonIndex]
+            )
+          ) {
+            horizontalLineCounter++;
+            verticalLinesCounters[horizonIndex]++;
+            verticalIndex + horizonIndex === this.bingoSize - 1
+              ? diagonalLineCounter1++
+              : null;
+            verticalIndex === horizonIndex ? diagonalLineCounter2++ : null;
+          }
+        }
+      );
+
+      // 横方向のループが終わる度にビンゴがあるか判定する
+      if (
+        horizontalLineCounter === this.bingoSize ||
+        verticalLinesCounters.includes(this.bingoSize) ||
+        diagonalLineCounter1 === this.bingoSize ||
+        diagonalLineCounter2 === this.bingoSize
+      ) {
+        this.result = true;
+        break;
+      }
+      verticalIndex++;
+    }
+    this.loading = false;
   }
 
   autoInput(inputNum: number) {
     switch (inputNum) {
       case 1:
-        this.bingoNum = 3;
-        this.bingoText =
+        // this.bingoSize = 3;
+        this.inputValue =
           '3\napple orange cube\nbatch web cloud\nsql http https\n7\nweb\nhttps\nwindows\nbatch\nkeyboard\napple\ncpu';
         break;
 
       case 2:
-        this.bingoNum = 4;
-        this.bingoText =
+        // this.bingoSize = 4;
+        this.inputValue =
           '3\ncpp kotlin typescript\ncsharp ruby php\ngo rust dart\n5\njava\ndelphi\nfortran\nhaskell\npython';
         break;
 
       case 3:
-        this.bingoNum = 4;
-        this.bingoText =
+        // this.bingoSize = 4;
+        this.inputValue =
           '4\nbeer wine gin vodka\nbeef chicken pork seafood\nant bee ladybug beetle\nbear snake dog camel\n7\nbe\nbear\nbee\nbeef\nbeen\nbeer\nbeetle';
         break;
     }
