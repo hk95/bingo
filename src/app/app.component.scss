@@ -1,0 +1,18 @@
+.input {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 32px;
+
+  &__number {
+    margin-bottom: 8px;
+  }
+
+  &__textarea {
+    min-height: 200px;
+  }
+}
+
+.check-button {
+  cursor: pointer;
+  margin-bottom: 32px;
+}
